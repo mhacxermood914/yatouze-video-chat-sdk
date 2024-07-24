@@ -1,5 +1,5 @@
-import Greet from "./components/Greet";
+import YatouzeVideoChat from "./components/YatouzeVideoChat"
 
 export {
-    Greet
+    YatouzeVideoChat
 }

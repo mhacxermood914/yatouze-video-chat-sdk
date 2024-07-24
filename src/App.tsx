@@ -1,9 +1,9 @@
 import './App.css'
-import Greet from './components/Greet'
+import YatouzeVideoChat from './components/YatouzeVideoChat'
 
 function App() {
 
-  return <Greet name='Wassi' />
+  return <YatouzeVideoChat name='Wassi' />
 }
 
 export default App
