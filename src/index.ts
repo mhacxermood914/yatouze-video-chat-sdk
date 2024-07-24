@@ -1,5 +1,3 @@
 import YatouzeVideoChat from "./components/YatouzeVideoChat"
 
-export {
-    YatouzeVideoChat
-}
+export default YatouzeVideoChat
