@@ -20,21 +20,26 @@ export default function YatouzeVideoChat(){
         })
         if(localVideo.current)localVideo.current.srcObject= mediaStream;
 
+        localStream = mediaStream
+
         rtcPeerConnection =new RTCPeerConnection(iceServers)
 
-        rtcPeerConnection.onaddstream= (event:any)=>{
+        localStream.getTracks().forEach((track:any)=>{
+            rtcPeerConnection.addTrack(track, localStream)
+        })
+
+        rtcPeerConnection.onconnectionstatechange=(event:any)=>{
             console.log({event})
         }
 
-        rtcPeerConnection.addEventListener('connectionstatechange', (event:any)=>{
-            console.log({event})
-        })
-
         rtcPeerConnection.onicecandidate = function(event:any){
             if(event.candidate){
-                // console.log("ice candidate", event.candidate)
                 socket.emit("candidate", event.candidate);
             }
+        }
+
+        rtcPeerConnection.ontrack = (ev:any) => {
+            console.log({ev:ev.streams[0]})
         }
 
 
@@ -45,38 +50,34 @@ export default function YatouzeVideoChat(){
         remoteStream = new MediaStream()
         remoteVideo.current.srcObject = remoteStream
 
-
-        localStream.getTracks().forEach((track:any)=>{
-            rtcPeerConnection.addTrack(track, localStream)
-        })
+        rtcPeerConnection.ontrack = (ev:any) => {
+            console.log({ev:ev.streams[0]})
+            ev.streams[0].getTracks().forEach((track:any)=>{
+                remoteStream.addTrack(track)
+            })
+               
+        };
+        
     }
 
     const createOffer = async ()=>{
-        console.log({rtcPeerConnection})
+        createPeerConnection(uid)
         const offer:any = await rtcPeerConnection.createOffer({offerToReceiveVideo:true})
-
-
-
         rtcPeerConnection.setLocalDescription(offer)
-
         socket.emit('offer',{
             offer,
             memberId: uid
         })
-
-        console.log({offer})
     }
 
     const createAnswer = async (offer:any)=>{
+        createPeerConnection(uid)
         await rtcPeerConnection.setRemoteDescription(offer)
         const answer = await rtcPeerConnection.createAnswer({offerToReceiveVideo:true})
         rtcPeerConnection.setLocalDescription(answer)
-
         socket.emit('answer',{
             answer
         })
-
-        console.log({rtcPeerConnection})
     }
 
 
@@ -98,9 +99,6 @@ export default function YatouzeVideoChat(){
         })
 
         socket.on("getCandidate", (candidate) => {
-
-            console.log("state",rtcPeerConnection)
-        
             if(rtcPeerConnection){
                 rtcPeerConnection.addIceCandidate(candidate)
             }
@@ -112,7 +110,7 @@ export default function YatouzeVideoChat(){
 
     return (
         <>
-            <h1>Video Chat</h1>
+            <h1> Yatouze Video Chat</h1>
             <div id="videos">
                 <video className="vid-player" ref={localVideo} autoPlay playsInline></video>
                 <video className="vid-player" ref={remoteVideo} autoPlay playsInline></video>
