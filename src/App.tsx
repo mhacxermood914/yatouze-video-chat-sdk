@@ -1,9 +1,10 @@
 import './App.css'
+import './styles/index.css'
 import YatouzeVideoChat from './components/YatouzeVideoChat'
 
 function App() {
 
-  return <YatouzeVideoChat name='Wassi' />
+  return <YatouzeVideoChat />
 }
 
 export default App
