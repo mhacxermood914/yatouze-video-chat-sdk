@@ -40,6 +40,7 @@ export default function YatouzeVideoChat(){
 
         rtcPeerConnection.onicecandidate = function(event:any){
             if(event.candidate){
+                console.log({event})
                 socket.emit("candidate", event.candidate);
             }
         }
