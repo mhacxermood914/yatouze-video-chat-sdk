@@ -52,12 +52,12 @@ class SocketService {
   }
 }
 
-export default new SocketService('https://signaling-server-webrtc.vercel.app/',{
+export default new SocketService('https://staging.lalla-api.xyz',{
     transports: ['websocket', 'polling', 'flashsocket'],
 
     cors: {
 
-        origin: "https://signaling-server-webrtc.vercel.app/",
+        origin: "https://staging.lalla-api.xyz",
 
         credentials: true
 
