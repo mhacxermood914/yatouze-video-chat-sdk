@@ -52,12 +52,12 @@ class SocketService {
   }
 }
 
-export default new SocketService('https://signaling-server-webrtc-git-master-mhacxermood914s-projects.vercel.app',{
+export default new SocketService('https://signaling-server-webrtc.vercel.app/',{
     transports: ['websocket', 'polling', 'flashsocket'],
 
     cors: {
 
-        origin: "https://signaling-server-webrtc-git-master-mhacxermood914s-projects.vercel.app/",
+        origin: "https://signaling-server-webrtc.vercel.app/",
 
         credentials: true
 
