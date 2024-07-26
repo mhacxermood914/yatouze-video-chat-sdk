@@ -11,7 +11,16 @@ export default function YatouzeVideoChat(){
     const uid:any = generateUid(12)
     let rtcPeerConnection: any, remoteStream:any, localStream:any;
     const iceServers:any= [
-        { urls: ["stun:stun.l.google.com:19302", "stun:stun2.l.google.com:19302"] }  
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun.l.google.com:5349" },
+        { urls: "stun:stun1.l.google.com:3478" },
+        { urls: "stun:stun1.l.google.com:5349" },
+        { urls: "stun:stun2.l.google.com:19302" },
+        { urls: "stun:stun2.l.google.com:5349" },
+        { urls: "stun:stun3.l.google.com:3478" },
+        { urls: "stun:stun3.l.google.com:5349" },
+        { urls: "stun:stun4.l.google.com:19302" },
+        { urls: "stun:stun4.l.google.com:5349" }
     ]
 
     const setupDeviceAndRTC = async ()=>{
@@ -22,7 +31,7 @@ export default function YatouzeVideoChat(){
 
         localStream = mediaStream
 
-        rtcPeerConnection =new RTCPeerConnection(iceServers)
+        rtcPeerConnection =new RTCPeerConnection({iceServers})
 
         localStream.getTracks().forEach((track:any)=>{
             rtcPeerConnection.addTrack(track, localStream)
