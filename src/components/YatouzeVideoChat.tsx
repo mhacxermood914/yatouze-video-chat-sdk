@@ -27,7 +27,7 @@ export default function YatouzeVideoChat(){
 
     const setupDeviceAndRTC = async ()=>{
         const mediaStream = await navigator.mediaDevices.getUserMedia({
-            video:true, audio: false
+            video:true, audio: true
         })
         if(localVideo.current)localVideo.current.srcObject= mediaStream;
 
@@ -42,7 +42,7 @@ export default function YatouzeVideoChat(){
         })
 
         rtcPeerConnection.onconnectionstatechange=(event:any)=>{
-            if(event.target.connectionState === "disconnected"){
+            if(event.target.connectionState === "disconnected" || event.target.connectionState === "failed"){
                 console.log({event})
                 handleDisconnection()
             }
@@ -126,6 +126,26 @@ export default function YatouzeVideoChat(){
         })
     }
 
+    const handleToggleCamera = async ()=>{
+        const videoTrack:any = localStream.getTracks().find((tracks:any)=>tracks.kind === 'video')
+
+        if(videoTrack.enabled){
+            videoTrack.enabled = false
+        }else{
+            videoTrack.enabled = true
+        }
+    }
+
+    const handleToggleMicro = async ()=>{
+        const audioTrack:any = localStream.getTracks().find((tracks:any)=>tracks.kind === 'audio')
+
+        if(audioTrack.enabled){
+            audioTrack.enabled = false
+        }else{
+            audioTrack.enabled = true
+        }
+    }
+
 
     React.useEffect(()=>{
         setupDeviceAndRTC()
@@ -149,6 +169,9 @@ export default function YatouzeVideoChat(){
             if(data.is_new_user){
                 // pour gerer la renegociation en cas de deconnexion (cloture d'onglet ou reload de page) d'un des peers
                 // actuellement je me base sur des event de la webRTC , on pourrais dans un futur proche gerer avec les websockets..
+                // apres plusieurs teste les websockets seront beaucoup plus efficace , car l'emission de l'event disconnected par webRTC viens
+                // parfois tardivement
+
                 if(!rtcPeerConnection){
                     setupDeviceAndRTC()
                     createPeerConnection('')
@@ -173,6 +196,11 @@ export default function YatouzeVideoChat(){
             <div id="videos">
                 <video className="vid-player" ref={localVideo} autoPlay playsInline></video>
                 <video className="vid-player" ref={remoteVideo} autoPlay playsInline></video>
+            </div>
+            <div>
+                <button onClick={handleToggleCamera}>Toogle Camera</button>
+                <button>End Call</button>
+                <button onClick={handleToggleMicro}>Toogle Audio</button>
             </div>
             {/*<button id="join" className="btn" onClick={()=>createOffer()}>Click to join</button>*/}
         </>
