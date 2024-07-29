@@ -94,14 +94,15 @@ export default function YatouzeVideoChat(){
         console.log({memberId})
         remoteStream = new MediaStream()
         remoteVideo.current.srcObject = remoteStream
-
-        rtcPeerConnection.ontrack = (ev:any) => {
-            console.log({ev:ev.streams[0]})
-            ev.streams[0].getTracks().forEach((track:any)=>{
-                remoteStream.addTrack(track)
-            })
-               
-        };
+        if(rtcPeerConnection){
+            rtcPeerConnection.ontrack = (ev:any) => {
+                console.log({ev:ev.streams[0]})
+                ev.streams[0].getTracks().forEach((track:any)=>{
+                    remoteStream.addTrack(track)
+                })
+                   
+            };
+        }
         
     }
 
@@ -132,9 +133,7 @@ export default function YatouzeVideoChat(){
 
     React.useEffect(()=>{
         socket.connect()
-
-
-
+    
         socket.on('getOffer', (data)=>{
             console.log({data})
             createAnswer(data.offer)
@@ -148,9 +147,11 @@ export default function YatouzeVideoChat(){
 
         socket.on('memberJoined', (data)=>{
             if(data.is_new_user){
-                // pour gerer la renegociation en cas de deconnexion d'un des peers
+                // pour gerer la renegociation en cas de deconnexion (cloture d'onglet ou reload de page) d'un des peers
+                // actuellement je me base sur des event de la webRTC , on pourrais dans un futur proche gerer avec les websockets..
                 if(!rtcPeerConnection){
                     setupDeviceAndRTC()
+                    createPeerConnection('')
                 }
                 createOffer()
             }
