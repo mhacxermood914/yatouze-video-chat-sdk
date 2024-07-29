@@ -18,11 +18,11 @@ export default function YatouzeVideoChat(){
             username: 'webrtc@live.com'
         },
         { urls: "stun:stun.l.google.com:5349" },
-        { urls: "stun:stun1.l.google.com:3478" },
-        { urls: "stun:stun1.l.google.com:5349" },
-        { urls: "stun:stun2.l.google.com:19302" },
-        { urls: "stun:stun2.l.google.com:5349" },
-        { urls: "stun:stun3.l.google.com:3478" }
+        // { urls: "stun:stun1.l.google.com:3478" },
+        // { urls: "stun:stun1.l.google.com:5349" },
+        // { urls: "stun:stun2.l.google.com:19302" },
+        // { urls: "stun:stun2.l.google.com:5349" },
+        // { urls: "stun:stun3.l.google.com:3478" }
     ]
 
     const setupDeviceAndRTC = async ()=>{
@@ -35,12 +35,17 @@ export default function YatouzeVideoChat(){
 
         rtcPeerConnection =new RTCPeerConnection({iceServers})
 
+        // rtcPeerConnection.getSenders().forEach((sender:any) => rtcPeerConnection.removeTrack(sender));
+
         localStream.getTracks().forEach((track:any)=>{
             rtcPeerConnection.addTrack(track, localStream)
         })
 
         rtcPeerConnection.onconnectionstatechange=(event:any)=>{
-            console.log({event})
+            if(event.target.connectionState === "disconnected"){
+                console.log({event})
+                handleDisconnection()
+            }
         }
 
         rtcPeerConnection.onicecandidate = function(event:any){
@@ -50,12 +55,40 @@ export default function YatouzeVideoChat(){
             }
         }
 
+        rtcPeerConnection.oniceconnectionstatechange  = function(){
+            console.log('ICE Connection State:', rtcPeerConnection.iceConnectionState);
+        }
+
+        rtcPeerConnection.onicecandidateerror = function(event:any) {
+            console.error('ICE Candidate Error:', event);
+        };
+
         rtcPeerConnection.ontrack = (ev:any) => {
             console.log({ev:ev.streams[0]})
         }
 
+        socket.emit('join', {
+            room: "main",
+            name:generateUid(14)
+        })
 
+        // createOffer()
     }
+
+    async function handleDisconnection() {
+        console.log('Connection lost. Attempting to renegotiate...');
+      
+        // Close the existing connection
+        if (rtcPeerConnection) {
+            rtcPeerConnection.close();
+            rtcPeerConnection = null;
+        }
+      
+        // Recreate the peer connection and add local tracks
+        await createPeerConnection('');
+      
+        // createOffer()
+      }
 
     const createPeerConnection = async (memberId:any)=>{
         console.log({memberId})
@@ -74,7 +107,7 @@ export default function YatouzeVideoChat(){
 
     const createOffer = async ()=>{
         createPeerConnection(uid)
-        const offer:any = await rtcPeerConnection.createOffer({offerToReceiveVideo:true})
+        const offer:any = await rtcPeerConnection.createOffer({offerToReceiveVideo:true,iceRestart: true})
         rtcPeerConnection.setLocalDescription(offer)
         socket.emit('offer',{
             offer,
@@ -84,7 +117,7 @@ export default function YatouzeVideoChat(){
 
     const createAnswer = async (offer:any)=>{
         createPeerConnection(uid)
-        await rtcPeerConnection.setRemoteDescription(offer)
+        await rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(offer))
         const answer = await rtcPeerConnection.createAnswer({offerToReceiveVideo:true})
         rtcPeerConnection.setLocalDescription(answer)
         socket.emit('answer',{
@@ -100,6 +133,8 @@ export default function YatouzeVideoChat(){
     React.useEffect(()=>{
         socket.connect()
 
+
+
         socket.on('getOffer', (data)=>{
             console.log({data})
             createAnswer(data.offer)
@@ -107,7 +142,18 @@ export default function YatouzeVideoChat(){
 
         socket.on('getAnswer',(data)=>{
             console.log({data})
-            rtcPeerConnection.setRemoteDescription(data.answer)
+            rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(data.answer))
+        })
+
+
+        socket.on('memberJoined', (data)=>{
+            if(data.is_new_user){
+                // pour gerer la renegociation en cas de deconnexion d'un des peers
+                if(!rtcPeerConnection){
+                    setupDeviceAndRTC()
+                }
+                createOffer()
+            }
         })
 
         socket.on("getCandidate", (candidate) => {
@@ -117,7 +163,7 @@ export default function YatouzeVideoChat(){
         
         });
 
-        return ()=> socket.disconnect()
+        // return ()=> socket.disconnect()
     },[])
 
     return (
@@ -127,7 +173,7 @@ export default function YatouzeVideoChat(){
                 <video className="vid-player" ref={localVideo} autoPlay playsInline></video>
                 <video className="vid-player" ref={remoteVideo} autoPlay playsInline></video>
             </div>
-            <button id="join" className="btn" onClick={()=>createOffer()}>Click to join</button>
+            {/*<button id="join" className="btn" onClick={()=>createOffer()}>Click to join</button>*/}
         </>
     )
 }

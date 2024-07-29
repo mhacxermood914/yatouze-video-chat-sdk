@@ -52,12 +52,12 @@ class SocketService {
   }
 }
 
-export default new SocketService('https://staging.lalla-api.xyz',{
+export default new SocketService('http://localhost:3000',{
     transports: ['websocket', 'polling', 'flashsocket'],
 
     cors: {
 
-        origin: "https://staging.lalla-api.xyz",
+        origin: "http://localhost:3000",
 
         credentials: true
 
