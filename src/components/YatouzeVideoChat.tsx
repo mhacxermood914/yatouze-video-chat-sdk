@@ -198,11 +198,11 @@ export default function YatouzeVideoChat(){
                 <video className="vid-player" ref={remoteVideo} autoPlay playsInline></video>
             </div>
             <div>
+                <button id="join" className="btn" onClick={()=>createOffer()}>Click to join</button>
                 <button onClick={handleToggleCamera}>Toogle Camera</button>
                 {/*<button>End Call</button>*/}
                 <button onClick={handleToggleMicro}>Toogle Audio</button>
             </div>
-            {/*<button id="join" className="btn" onClick={()=>createOffer()}>Click to join</button>*/}
         </>
     )
 }
