@@ -199,7 +199,7 @@ export default function YatouzeVideoChat(){
             </div>
             <div>
                 <button onClick={handleToggleCamera}>Toogle Camera</button>
-                <button>End Call</button>
+                {/*<button>End Call</button>*/}
                 <button onClick={handleToggleMicro}>Toogle Audio</button>
             </div>
             {/*<button id="join" className="btn" onClick={()=>createOffer()}>Click to join</button>*/}
