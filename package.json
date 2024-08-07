@@ -13,6 +13,7 @@
     "bundle": "tsup src/index.ts"
   },
   "dependencies": {
+    "mediasoup-client": "^3.7.14",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "socket.io-client": "^4.7.5"
