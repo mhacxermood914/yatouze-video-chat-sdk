@@ -52,12 +52,12 @@ class SocketService {
   }
 }
 
-export default new SocketService('http://localhost:4000',{
+export default new SocketService('https://13.51.171.10:4000',{
     transports: ['websocket', 'polling', 'flashsocket'],
 
     cors: {
 
-        origin: "http://localhost:4000",
+        origin: "*",
 
         credentials: true
 

@@ -596,7 +596,7 @@ export default function YatouzeVideoChat(){
                         <video id='localVideo' className='w-full h-full object-cover' autoPlay playsInline></video>
                     </div>
                 </div>
-                <button onClick={()=>stopVideoOnly()}>Stop camera</button>
+                <button onClick={()=>stopTracks('')}>Stop camera</button>
                 <button onClick={()=>resumeVideoOnly()}>Resume camera</button>
                 <button onClick={()=>shareScreen()}>Share Screen</button>
             </div>
