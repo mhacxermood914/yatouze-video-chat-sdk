@@ -6,10 +6,10 @@
 // /* eslint-disable react-hooks/exhaustive-deps */
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import React, {useState, useEffect, useRef} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import socket from '../utils/socket'
-import { io, Socket } from 'socket.io-client';
+// import { io, Socket } from 'socket.io-client';
 import { Device } from 'mediasoup-client';
 
 let params: any= {
@@ -60,7 +60,7 @@ export default function YatouzeVideoChat(){
     [consumersVideos, setConsumersVideos]: any =useState([])
     let ref:any =useRef(false)
     let [videoElements, setVideoElements]:any = useState([])
-    let [refresh, setRefresh] = useState(false)
+    // let [refresh, setRefresh] = useState(false)
     let [localProducerId, setLocalProducerId]:any =useState('')
     const videoChatContainer:any = useRef(null)
 
@@ -161,18 +161,18 @@ export default function YatouzeVideoChat(){
         }
     }
 
-    function stopVideoOnly() {
-        console.log(localProducerId)
-        socket.emit('producer-paused', {producerId:localProducerId}, (data: any)=>{
-            console.log({data})
-        })
-        // console.log({localStream})
-        // localStream.getTracks().forEach((track: { readyState: string; kind: string; stop: () => void; }) => {
-        //     if (track.readyState == 'live' && track.kind === 'video') {
-        //         track.stop();
-        //     }
-        // });
-    }
+    // function stopVideoOnly() {
+    //     console.log(localProducerId)
+    //     socket.emit('producer-paused', {producerId:localProducerId}, (data: any)=>{
+    //         console.log({data})
+    //     })
+    //     // console.log({localStream})
+    //     // localStream.getTracks().forEach((track: { readyState: string; kind: string; stop: () => void; }) => {
+    //     //     if (track.readyState == 'live' && track.kind === 'video') {
+    //     //         track.stop();
+    //     //     }
+    //     // });
+    // }
     
     
 
