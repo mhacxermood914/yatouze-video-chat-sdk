@@ -7,7 +7,7 @@
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {useState, useEffect, useRef} from 'react'
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+// import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import socket from '../utils/socket'
 // import { io, Socket } from 'socket.io-client';
 import { Device } from 'mediasoup-client';
@@ -67,7 +67,7 @@ export default function YatouzeVideoChat(){
     const init = ()=>{
         joinRoom()
     }
-
+    console.log({localProducerId, uid,consumerLength})
     const addElements= (id: string,  stream: any)=>{
         if(id !== 'localVideo'){
             console.log(!document.getElementById(`div-${id}`))
@@ -127,7 +127,10 @@ export default function YatouzeVideoChat(){
             let elements:any = (consumersVideos.map((el:any)=>addElements(el.producerId,el.media))).filter((el:any)=>el)
             console.log({elements})
             
-            setVideoElements((prev:any)=>[...elements])
+            setVideoElements((prev:any)=>{
+                console.log({prev})
+                return [...elements]
+            })
         }
     },[consumersVideos])
 
@@ -576,7 +579,7 @@ export default function YatouzeVideoChat(){
                 <div className='p-6'>
                     <div className='flex items-center justify-between space-x-4'>
                         <div className='p-2 shadow-md w-[2rem] rounded-lg h-[2rem] flex justify-center items-center cursor-pointer'>
-                            <IoIosArrowBack />
+                            {/*<IoIosArrowBack />*/}
                         </div>
                         {/* new coming users */}
                         <div className='flex space-x-4 justify-between items-center flex-1  '>
@@ -587,7 +590,7 @@ export default function YatouzeVideoChat(){
                                 
                         </div>
                         <div className='p-2 shadow-md w-[2rem] rounded-lg h-[2rem] flex justify-center items-center cursor-pointer'>
-                            <IoIosArrowForward />
+                            {/*<IoIosArrowForward />*/}
                         </div>
                     </div>
                 </div>
