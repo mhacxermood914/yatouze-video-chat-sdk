@@ -7,19 +7,27 @@ import dotenv from 'dotenv';
 // Load environment variables from .env
 dotenv.config();
 
-export default defineConfig(({ mode }) => {
-  const { APP_URL } = process.env;
-
-  return {
+export default defineConfig({
     plugins: [
       react(),
-      tailwindcss(),
     ],
-    define: {
-      // Pass environment variables to the client-side code
-      'process.env': {
-        APP_URL: JSON.stringify(APP_URL),
+    css: {
+      postcss: {
+        plugins: [tailwindcss()],
       },
-    },
-  };
+    }
+    // define: {
+    //   // Pass environment variables to the client-side code
+    //   // 'process.env': {
+    //   //   APP_URL: JSON.stringify(APP_URL),
+    //   // },
+    // },
+    // server:{
+    //   host:true,
+    //   https:{
+    //     key: './ssl/key.pem',
+    //     cert: './ssl/cert.pem'
+    //   }
+    // }
+  
 });
