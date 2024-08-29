@@ -410,6 +410,7 @@ export default function YatouzeVideoChat(){
     }
     
     const stopTracks = async (producerId: string)=>{
+        console.log({producerId})
         await localProducer.pause()
         // const vid:any = document.getElementById(producerId)!;
         // const tracks = vid.srcObject.getTracks();
